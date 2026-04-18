@@ -9,7 +9,7 @@ ENV PYTHONUNBUFFERED=1
 # Install system dependencies in one layer, clear APT cache
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential nodejs npm python3 ripgrep ffmpeg gcc python3-dev libffi-dev procps git && \
+        build-essential nodejs npm python3 ripgrep gcc python3-dev libffi-dev procps git && \
     rm -rf /var/lib/apt/lists/*
 
 # Non-root user for runtime; UID can be overridden via HERMES_UID at runtime
@@ -21,10 +21,8 @@ COPY --chmod=0755 --from=uv_source /usr/local/bin/uv /usr/local/bin/uvx /usr/loc
 COPY . /opt/hermes
 WORKDIR /opt/hermes
 
-# Install Node dependencies as root (Playwright removed — not needed for Telegram bot)
+# Install Node dependencies as root
 RUN npm install --prefer-offline --no-audit && \
-    cd /opt/hermes/scripts/whatsapp-bridge && \
-    npm install --prefer-offline --no-audit && \
     npm cache clean --force
 
 # Install Claude Code CLI for Claude Max OAuth support
@@ -35,7 +33,7 @@ RUN chown -R hermes:hermes /opt/hermes
 USER hermes
 
 RUN uv venv && \
-    uv pip install --no-cache-dir -e ".[all]"
+    uv pip install --no-cache-dir -e ".[messaging,cron,cli,pty,mcp,acp,web]"
 
 USER root
 RUN chmod +x /opt/hermes/docker/entrypoint.sh
