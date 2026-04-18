@@ -31,6 +31,9 @@ RUN npm install --prefer-offline --no-audit && \
     npm install --prefer-offline --no-audit && \
     npm cache clean --force
 
+# Install Claude Code CLI for Claude Max OAuth support
+RUN npm install -g @anthropic-ai/claude-code
+
 # Hand ownership to hermes user, then install Python deps in a virtualenv
 RUN chown -R hermes:hermes /opt/hermes
 USER hermes
