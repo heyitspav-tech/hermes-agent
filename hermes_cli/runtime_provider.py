@@ -166,7 +166,8 @@ def _resolve_runtime_from_pool_entry(
         cfg_base_url = ""
         if cfg_provider == "anthropic":
             cfg_base_url = str(model_cfg.get("base_url") or "").strip().rstrip("/")
-        base_url = cfg_base_url or base_url or "https://api.anthropic.com"
+        env_base_url = os.getenv("ANTHROPIC_BASE_URL", "").strip().rstrip("/")
+        base_url = env_base_url or cfg_base_url or base_url or "https://api.anthropic.com"
     elif provider == "openrouter":
         base_url = base_url or OPENROUTER_BASE_URL
     elif provider == "xai":
@@ -541,7 +542,8 @@ def _resolve_explicit_runtime(
         cfg_base_url = ""
         if cfg_provider == "anthropic":
             cfg_base_url = str(model_cfg.get("base_url") or "").strip().rstrip("/")
-        base_url = explicit_base_url or cfg_base_url or "https://api.anthropic.com"
+        env_base_url = os.getenv("ANTHROPIC_BASE_URL", "").strip().rstrip("/")
+        base_url = explicit_base_url or env_base_url or cfg_base_url or "https://api.anthropic.com"
         api_key = explicit_api_key
         if not api_key:
             from agent.anthropic_adapter import resolve_anthropic_token
