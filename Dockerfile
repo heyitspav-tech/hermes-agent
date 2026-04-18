@@ -41,4 +41,6 @@ RUN apt-get purge -y build-essential gcc python3-dev libffi-dev && \
 RUN chmod +x /opt/hermes/docker/entrypoint.sh
 
 ENV HERMES_HOME=/opt/data
+ENV PATH="/opt/hermes/.venv/bin:${PATH}"
 ENTRYPOINT [ "/opt/hermes/docker/entrypoint.sh" ]
+CMD [ "gateway" ]
